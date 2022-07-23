@@ -1,0 +1,1 @@
+player_snake_block_size = 20
