@@ -82,7 +82,7 @@ def player_snake_eat_food():
         add_snake_block = [head_snake[0] - x_speed, head_snake[1] - y_speed]
         player_snake_block_list.append(add_snake_block)
         player_score += 1
-        player_snake_speed = player_snake_information.player_snake_speed + player_score // 25
+        player_snake_speed = player_snake_information.player_snake_speed + player_score // 20
 
 def player_snake_food_move():
     global player_snake_food_list
@@ -217,17 +217,18 @@ def display_screen_AI_snakes():
     display_AI_snake_list()
 
 def update_AI_snake_number():
-    while len(AI_snake_list) < player_score // 2:
+    while len(AI_snake_list) < player_score // 25:
         create_AI_snake()
 
 # Display all AI and Player
 def display_all():
-    game_window.blit(images.ingame_background, (0, 0))
+    game_window.fill((0, 0, 0))
     display_screen_AI_snakes()
     display_screen_player_snake()  
 
 # Play game
 def play_game():
+    global clock
     global game_over
     global head_snake_x
     global head_snake_y
@@ -262,9 +263,9 @@ def play_game():
         update_AI_snake_number()
         random_player_snake_food()
         random_AI_snake_food()
-        if temp_count % 6 == 0:
+        if temp_count % 12 == 0:
             AI_snake_move()
-        if temp_count % 30 == 0:
+        if temp_count % 60 == 0:
             player_snake_food_move()
         player_snake_move()
         AI_snake_eat_food()
@@ -276,30 +277,32 @@ def play_game():
         
         clock.tick(player_snake_speed) 
 
-# Main
-pygame.init()
-game_window = pygame.display.set_mode((window_game_information.window_length, window_game_information.window_width))
-pygame.display.set_caption(window_game_information.game_caption)
-pygame.display.update()
-clock = pygame.time.Clock()
-
-game_over = False
-head_snake_x = window_game_information.window_length / 2
-head_snake_y = window_game_information.window_width / 2
-x_speed = 0
-y_speed = 0
-player_snake_block_list = [[head_snake_x, head_snake_y]]
-player_snake_food_list = []
-player_score = 0
-player_snake_speed = player_snake_information.player_snake_speed
-
-AI_snake_speed = AI_snake_information.AI_snake_speed
-AI_snake_list = []
-AI_snake_block_list = []
-AI_snake_food_list = []
-temp_count = 0
-
-play_game()
+# # Main
     
-pygame.quit()
-quit()
+if __name__ == '__main__':
+    pygame.init()
+    game_window = pygame.display.set_mode((window_game_information.window_length, window_game_information.window_width))
+    pygame.display.set_caption(window_game_information.game_caption)
+    pygame.display.update()
+    clock = pygame.time.Clock()
+
+    game_over = False
+    head_snake_x = window_game_information.window_length // 2
+    head_snake_y = window_game_information.window_width // 2
+    x_speed = 0
+    y_speed = 0
+    player_snake_block_list = [[head_snake_x, head_snake_y]]
+    player_snake_food_list = []
+    player_score = 0
+    player_snake_speed = player_snake_information.player_snake_speed
+
+    AI_snake_speed = AI_snake_information.AI_snake_speed
+    AI_snake_list = []
+    AI_snake_block_list = []
+    AI_snake_food_list = []
+    temp_count = 0
+
+    play_game()
+        
+    pygame.quit()
+    quit()
