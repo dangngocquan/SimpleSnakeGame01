@@ -1,7 +1,7 @@
 from itertools import count
 from matplotlib.pyplot import fill
 import pygame
-import window_game
+import window_game_information
 import player_snake_information
 import AI_snake_information
 import images
@@ -33,8 +33,8 @@ def display_screen_player_snake():
     display_score()
 
 def random_coordinates_empty_for_player():
-    max_cells_x = window_game.window_length // player_snake_information.player_snake_block_size - 2
-    max_cells_y = window_game.window_width // player_snake_information.player_snake_block_size - 2
+    max_cells_x = window_game_information.window_length // player_snake_information.player_snake_block_size - 2
+    max_cells_y = window_game_information.window_width // player_snake_information.player_snake_block_size - 2
     max_cells_in_game = max_cells_x * max_cells_y
     cells_number_existing = len(player_snake_block_list) + len(player_snake_food_list)
     x = -1
@@ -63,8 +63,8 @@ def player_snake_move():
     global head_snake_y
     global player_snake_block_list
     
-    head_snake_x = (head_snake_x + x_speed) % window_game.window_length
-    head_snake_y = (head_snake_y + y_speed) % window_game.window_width
+    head_snake_x = (head_snake_x + x_speed) % window_game_information.window_length
+    head_snake_y = (head_snake_y + y_speed) % window_game_information.window_width
     player_snake_block_list.insert(0, [head_snake_x, head_snake_y])
     del player_snake_block_list[len(player_snake_block_list) - 1]
 
@@ -137,18 +137,18 @@ def AI_snake_move():
                 AI_x_speed = AI_snake_information.AI_snake_block_size
                 AI_y_speed = 0
             
-            if [(AI_snake[0][0] + AI_x_speed) % window_game.window_length, 
-                (AI_snake[0][1] + AI_y_speed) % window_game.window_width] in AI_snake:
+            if [(AI_snake[0][0] + AI_x_speed) % window_game_information.window_length, 
+                (AI_snake[0][1] + AI_y_speed) % window_game_information.window_width] in AI_snake:
                 AI_x_speed = 0
                 AI_y_speed = 0
 
-        AI_snake.insert(0, [(AI_snake[0][0] + AI_x_speed) % window_game.window_length, 
-                            (AI_snake[0][1] + AI_y_speed) % window_game.window_width])
+        AI_snake.insert(0, [(AI_snake[0][0] + AI_x_speed) % window_game_information.window_length, 
+                            (AI_snake[0][1] + AI_y_speed) % window_game_information.window_width])
         del AI_snake[len(AI_snake) - 1]
 
 def random_coordinates_empty_for_AI():
-    max_cells_x = window_game.window_length // AI_snake_information.AI_snake_block_size - 2
-    max_cells_y = window_game.window_width // AI_snake_information.AI_snake_block_size - 2
+    max_cells_x = window_game_information.window_length // AI_snake_information.AI_snake_block_size - 2
+    max_cells_y = window_game_information.window_width // AI_snake_information.AI_snake_block_size - 2
     max_cells_in_game = max_cells_x * max_cells_y
     cells_number_existing = len(AI_snake_block_list) + len(AI_snake_food_list)
     x = -1
@@ -191,6 +191,10 @@ def display_screen_AI_snakes():
     # display_AI_snake_food()
     display_AI_snake_list()
 
+def update_AI_snake_number():
+    while len(AI_snake_list) < player_score // 1:
+        create_AI_snake()
+
 # Display all AI and Player
 def display_all():
     game_window.blit(images.ingame_background, (0, 0))
@@ -227,6 +231,7 @@ def play_game():
                     if x_speed != -player_snake_information.player_snake_block_size:
                         x_speed = player_snake_information.player_snake_block_size
                     y_speed = 0
+        update_AI_snake_number()
         random_player_snake_food()
         random_AI_snake_food()
         AI_snake_move()
@@ -240,17 +245,16 @@ def play_game():
         
         clock.tick(player_snake_speed) 
 
-
 # Main
 pygame.init()
-game_window = pygame.display.set_mode((window_game.window_length, window_game.window_width))
-pygame.display.set_caption(window_game.game_caption)
+game_window = pygame.display.set_mode((window_game_information.window_length, window_game_information.window_width))
+pygame.display.set_caption(window_game_information.game_caption)
 pygame.display.update()
 clock = pygame.time.Clock()
 
 game_over = False
-head_snake_x = window_game.window_length / 2
-head_snake_y = window_game.window_width / 2
+head_snake_x = window_game_information.window_length / 2
+head_snake_y = window_game_information.window_width / 2
 x_speed = 0
 y_speed = 0
 player_snake_block_list = [[head_snake_x, head_snake_y]]
@@ -262,8 +266,6 @@ AI_snake_speed = AI_snake_information.AI_snake_speed
 AI_snake_list = []
 AI_snake_block_list = []
 AI_snake_food_list = []
-create_AI_snake()
-create_AI_snake()
 
 play_game()
     
