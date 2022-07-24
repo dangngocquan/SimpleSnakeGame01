@@ -84,6 +84,29 @@ def player_snake_eat_food():
         player_score += 1
         player_snake_speed = player_snake_information.player_snake_speed + player_score // 25
 
+def player_snake_food_move():
+    global player_snake_food_list
+    for index in range(len(player_snake_food_list)):
+        food_change_x = 0
+        food_change_y = 0
+        direction = get_random_number(4)
+        if direction == 1:
+            food_change_x = 0
+            food_change_y = -player_snake_information.player_snake_block_size
+        elif direction == 2:
+            food_change_x = 0
+            food_change_y = player_snake_information.player_snake_block_size
+        elif direction == 3:
+            food_change_x = -player_snake_information.player_snake_block_size
+            food_change_y = 0
+        elif direction == 4:
+            food_change_x = player_snake_information.player_snake_block_size
+            food_change_y = 0
+        player_snake_food_list[index] = [player_snake_food_list[index][0] + food_change_x, 
+                                         player_snake_food_list[index][1] + food_change_y]
+                
+        
+
 def update_status_of_player_snake():
     global game_over
     global head_snake_x
@@ -97,6 +120,8 @@ def create_AI_snake():
     global AI_snake_list
     global AI_snake_block_list
     coordinates = random_coordinates_empty_for_player()
+    while coordinates[0] == player_snake_block_list[0][0] or coordinates[1] == player_snake_block_list[0][1]:
+        coordinates = random_coordinates_empty_for_player()
     if coordinates[0] != -1:
         AI_snake = [coordinates]
         AI_snake_list.append(AI_snake)
@@ -192,7 +217,7 @@ def display_screen_AI_snakes():
     display_AI_snake_list()
 
 def update_AI_snake_number():
-    while len(AI_snake_list) < player_score // 1:
+    while len(AI_snake_list) < player_score // 2:
         create_AI_snake()
 
 # Display all AI and Player
@@ -209,8 +234,11 @@ def play_game():
     global player_snake_block_list
     global x_speed
     global y_speed
+    global temp_count
 
     while not game_over:
+        temp_count += 1
+        temp_count %= 60
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_over = True
@@ -234,7 +262,10 @@ def play_game():
         update_AI_snake_number()
         random_player_snake_food()
         random_AI_snake_food()
-        AI_snake_move()
+        if temp_count % 6 == 0:
+            AI_snake_move()
+        if temp_count % 30 == 0:
+            player_snake_food_move()
         player_snake_move()
         AI_snake_eat_food()
         player_snake_eat_food()
@@ -266,6 +297,7 @@ AI_snake_speed = AI_snake_information.AI_snake_speed
 AI_snake_list = []
 AI_snake_block_list = []
 AI_snake_food_list = []
+temp_count = 0
 
 play_game()
     
